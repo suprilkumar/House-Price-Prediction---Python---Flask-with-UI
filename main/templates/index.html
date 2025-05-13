@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>House Price Predictor</title>
+    <link rel="stylesheet" href="./static/src/output.css">
+</head>
+
+<body>
+    <header class=" bg-red-500 py-5 px-32 mb-20 flex flex-row justify-between items-center w-full">
+        <div class="items-center text-white flex flex-col w-96 border border-white rounded-2xl p-2 me-8">
+            <h1 class="text-2xl font-semibold "> &copy; Supril </h1>
+            <h1 class="text-xl font-normal"> B.Tech AI-ML 07919051622 </h1>
+        </div>
+        <div class="flex flex-col justify-center w-full">
+            <h1 class="text-3xl text-white font-bold text-center">House Price Prediction System</h1>
+            <div class="py-0.5 bg-white w-full mt-4"></div>
+        </div>
+    </header>
+
+    <section class="mx-40 mb-8">
+        {% if prediction %}
+        <div class="bg-green-300 p-8 rounded-full border-4 border-green-600 flex gap-6 items-center text-center justify-center shadow-md shadow-black">
+            <h1 class="text-2xl text-black font-semibold">Predicted Output Price: </h1>
+            <h1 class="text-3xl text-green-800 font-bold"> &#8377; {{ prediction }} </h1>
+            {% elif error %}
+        <h2 style="color:red;">Error: {{ error }}</h2>
+        </div>
+        {% endif %}
+    </section>
+
+
+    <section class="w-full flex flex-row gap-12 mb-10">
+        <div class="border-8 border-s-0 border-red-500 p-6  w-[40%] rounded-e-4xl shadow-lg shadow-black">
+            <h1 class="text-2xl font-black mb-2 underline underline-offset-8">Project Description</h1>
+            <p class="text-base">This project is a <span class="font-semibold"> House Price Prediction System</span>
+                built using a machine learning model. The application allows users to predict the price of a house based
+                on various features such as area, number of bedrooms (BHK), bathrooms, furnishing status, locality,
+                parking, and more. <br> The system uses a trained <span class="font-semibold"> Random Forest Regressor
+                </span> model, which has been fine-tuned with real-world dataset sourced from <span
+                    class="font-semibold"> MagicBricks - Delhi Real Estate House Prices Dataset </span> to give accurate
+                house price predictions.</p>
+                <img src="./static/houseimg1.png" alt="">
+        </div>
+
+
+        <div class="bg-slate-600 w-[50%] p-8 flex flex-col gap-6 rounded-4xl shadow-lg shadow-black">
+            <h1 class="text-2xl font-semibold text-white underline underline-offset-8 text-center">Fill the details and
+                get your predictions here</h1>
+
+            <form method="POST" action="/predict">
+                <div class="grid grid-cols-2 gap-8">
+
+                    <div>
+                        <label for="area" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Area (in
+                            Sqft) </label>
+                        <input type="number" id="area" name="area"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="in the range of (30 - 24,000) sqft" required />
+                    </div>
+                    <div>
+                        <label for="bhk" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white"> BHK Count
+                        </label>
+                        <input type="number" id="bhk" name="bhk"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="in the range of (1 - 10)" required />
+                    </div>
+                    <div>
+                        <label for="bathroom" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
+                            Bathroom(s) Count</label>
+                        <input type="number" id="bathroom" name="bathroom"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="in the range of (1 - 8)" required />
+                    </div>
+
+                    <div>
+                        <label for="furnishing" class="block mb-2 text-lg font-medium text-white"> Furnishing </label>
+                        <select id="furnishing" name="furnishing"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option selected disabled>Select Furnishing</option>
+                            {% for item in options["Furnishing"] %}
+                            <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="locality" class="block mb-2 text-lg font-medium text-white"> Locality </label>
+                        <select id="locality" name="locality"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option selected disabled>Select Locality</option>
+                            {% for item in options["Locality"] %}
+                            <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="parking" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">
+                            Parking Count </label>
+                        <input type="number" id="parking" name="parking"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="No. of vehicles" required />
+                    </div>
+
+                    <div>
+                        <label for="status" class="block mb-2 text-lg font-medium text-white"> Status </label>
+                        <select id="status" name="status"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option selected disabled>Select Status </option>
+                            {% for item in options["Status"] %}
+                            <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="transaction" class="block mb-2 text-lg font-medium text-white"> Property Transaction
+                        </label>
+                        <select id="transaction" name="transaction"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option selected disabled>Select Property transaction </option>
+                            {% for item in options["Transaction"] %}
+                            <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="type" class="block mb-2 text-lg font-medium text-white"> Property Type </label>
+                        <select id="type" name="type"
+                            class=" border  text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500">
+                            <option selected disabled>Select Property type </option>
+                            {% for item in options["Type"] %}
+                            <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="items-center">
+                        <button type="submit"
+                            class="w-full my-8 text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none  focus:ring-blue-800 font-bold rounded-lg text-xl px-5 py-2.5 text-center me-2 mb-2">
+                            Submit </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+    </section>
+
+</body>
+
+</html>
